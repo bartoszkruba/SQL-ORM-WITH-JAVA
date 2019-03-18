@@ -1,46 +1,62 @@
 package models;
 
+import datasource.annotations.Column;
+import datasource.annotations.KeyDescription;
+import datasource.annotations.Table;
+
 
 import datasource.annotations.Column;
+import datasource.annotations.KeyDescription;
 import datasource.annotations.Table;
 
 import java.sql.Timestamp;
 
 public class Car {
 
-   @Column("_id")
-   private Long id;
-
-   @Column("plate_number")
-   private String plateNumber;
-
-   @Column("model")
-   private String model;
-
-   @Column("color")
-   private String color;
-
-   @Column("owner_id")
-   private Long ownerId;
-
-   @Column("desciption")
-   private String description;
-
-   @Column("total_distance")
-   private Long total_distance;
-
-   @Column("production_year")
-   private Timestamp productionYear;
-
    @Table("cars")
    public Car() {
    }
 
-   public Long getId() {
+   @Column("_id")
+   @KeyDescription("INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY")
+   private Long id;
+
+   @Column("plate_number")
+   @KeyDescription("VARCHAR(20) NOT NULL")
+   private String plateNumber;
+
+   @Column("model")
+   @KeyDescription("VARCHAR(50) NOT NULL")
+   private String model;
+
+   @Column("color")
+   @KeyDescription("VARCHAR(50)")
+   private String color;
+
+   @Column("owner_id")
+   @KeyDescription("INT(10) UNSIGNED NOT NULL, " +
+           "FOREIGN KEY (owner_id) REFERENCES users(_id) " +
+           "ON UPDATE CASCADE ON DELETE CASCADE")
+   private Long ownerId;
+
+   @Column("desciption")
+   @KeyDescription("VARCHAR(250)")
+   private String description;
+
+   @Column("total_distance")
+   @KeyDescription("INT(10) UNSIGNED NOT NULL")
+   private Long total_distance;
+
+   @Column("production_year")
+   @KeyDescription("TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
+   private Timestamp productionYear;
+
+
+   public long getId() {
       return id;
    }
 
-   public Long getTotal_distance() {
+   public long getTotal_distance() {
       return total_distance;
    }
 
@@ -56,7 +72,7 @@ public class Car {
       return color;
    }
 
-   public Long getOwnerId() {
+   public long getOwnerId() {
       return ownerId;
    }
 
@@ -88,7 +104,7 @@ public class Car {
       return this;
    }
 
-   public Car setOwnerId(Long ownerId) {
+   public Car setOwnerId(long ownerId) {
       this.ownerId = ownerId;
       return this;
    }
@@ -98,7 +114,7 @@ public class Car {
       return this;
    }
 
-   public Car setTotal_distance(Long total_distance) {
+   public Car setTotal_distance(long total_distance) {
       this.total_distance = total_distance;
       return this;
    }

@@ -1,8 +1,10 @@
 package datasource;
 
 import datasource.annotations.Column;
+import datasource.annotations.KeyDescription;
 import datasource.annotations.Table;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
@@ -97,6 +99,55 @@ public class Datasource {
       }
    }
 
+   public boolean createTable(Class clazz) {
+      try {
+         String table = ((Table) clazz.getConstructor().getAnnotation(Table.class)).value();
+
+         StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS " + table + " (");
+
+         Field[] fieldArr = clazz.getDeclaredFields();
+
+         for (Field f : fieldArr) {
+            f.setAccessible(true);
+            String name = f.getAnnotation(Column.class).value();
+            String description = f.getAnnotation(KeyDescription.class).value();
+            sb.append(name + " " + description + ", ");
+         }
+         sb.setLength(sb.length() - 2);
+         sb.append(")");
+
+         String sql = sb.toString();
+
+         System.out.println(sql);
+
+         Statement statement = conn.createStatement();
+
+         statement.executeUpdate(sql);
+
+         return true;
+      } catch (Exception e) {
+         e.printStackTrace();
+         return false;
+      }
+   }
+
+   public boolean dropTable(Class clazz) {
+      try {
+         String table = ((Table) clazz.getConstructor().getAnnotation(Table.class)).value();
+
+         String sql = "DROP TABLE IF EXISTS " + table;
+
+         Statement statement = conn.createStatement();
+
+         statement.executeUpdate(sql);
+
+         return true;
+      } catch (NoSuchMethodException | SQLException e) {
+         e.printStackTrace();
+         return false;
+      }
+   }
+
    public List<?> getAllItemsFromTable(Class clazz) {
       try {
 
@@ -113,5 +164,5 @@ public class Datasource {
          return null;
       }
    }
-
 }
+
