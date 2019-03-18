@@ -4,11 +4,9 @@ import datasource.annotations.Column;
 import datasource.annotations.Table;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Datasource {
 
@@ -96,6 +94,23 @@ public class Datasource {
       } catch (IllegalAccessException | NoSuchMethodException | SQLException e) {
          e.printStackTrace();
          return false;
+      }
+   }
+
+   public List<?> getAllItemsFromTable(Class clazz) {
+      try {
+
+         ObjectMapper objectMapper = new ObjectMapper(clazz);
+         String table = ((Table) clazz.getConstructor().getAnnotation(Table.class)).value();
+         String sql = "Select * FROM " + table;
+
+         Statement statement = conn.createStatement();
+
+         return objectMapper.map(statement.executeQuery(sql));
+
+      } catch (NoSuchMethodException | SQLException e) {
+         e.printStackTrace();
+         return null;
       }
    }
 

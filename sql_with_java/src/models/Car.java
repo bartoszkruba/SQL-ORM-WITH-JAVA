@@ -4,7 +4,7 @@ package models;
 import datasource.annotations.Column;
 import datasource.annotations.Table;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class Car {
 
@@ -30,7 +30,7 @@ public class Car {
    private Long total_distance;
 
    @Column("production_year")
-   private LocalDateTime productionYear;
+   private Timestamp productionYear;
 
    @Table("cars")
    public Car() {
@@ -38,6 +38,10 @@ public class Car {
 
    public Long getId() {
       return id;
+   }
+
+   public Long getTotal_distance() {
+      return total_distance;
    }
 
    public String getPlateNumber() {
@@ -60,7 +64,7 @@ public class Car {
       return description;
    }
 
-   public LocalDateTime getProductionYear() {
+   public Timestamp getProductionYear() {
       return productionYear;
    }
 
@@ -99,7 +103,7 @@ public class Car {
       return this;
    }
 
-   public Car setProductionYear(LocalDateTime productionYear) {
+   public Car setProductionYear(Timestamp productionYear) {
       this.productionYear = productionYear;
       return this;
    }
