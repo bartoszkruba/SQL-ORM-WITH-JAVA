@@ -65,13 +65,18 @@ public class Datasource {
 
          for (Field f : fieldArr) {
             f.setAccessible(true);
-            String name = f.getAnnotation(Column.class).value();
-            queryBegining.append(name + ", ");
-            values.append("?, ");
-            if (f.get(ob) == null) {
-               valuesToInsert.add(null);
-            } else {
-               valuesToInsert.add(f.get(ob).toString());
+
+            Column column = f.getAnnotation(Column.class);
+
+            if(column != null){
+               String name = column.value();
+               queryBegining.append(name + ", ");
+               values.append("?, ");
+               if (f.get(ob) == null) {
+                  valuesToInsert.add(null);
+               } else {
+                  valuesToInsert.add(f.get(ob).toString());
+               }
             }
          }
 
@@ -108,18 +113,22 @@ public class Datasource {
          Field[] fieldArr = clazz.getDeclaredFields();
 
          for (Field f : fieldArr) {
-            f.setAccessible(true);
-            String name = f.getAnnotation(Column.class).value();
-            String description = f.getAnnotation(KeyDescription.class).value();
-            sb.append(name + " " + description + ", ");
+            Column column = f.getAnnotation(Column.class);
+            KeyDescription keyDescription = f.getAnnotation(KeyDescription.class);
+
+            if(column != null && keyDescription != null){
+               f.setAccessible(true);
+               String name = column.value();
+               String description = keyDescription.value();
+               sb.append(name + " " + description + ", ");
+            }
          }
+
          sb.setLength(sb.length() - 2);
          sb.append(")");
 
          String sql = sb.toString();
-
          System.out.println(sql);
-
          Statement statement = conn.createStatement();
 
          statement.executeUpdate(sql);
@@ -152,6 +161,7 @@ public class Datasource {
       try {
 
          ObjectMapper objectMapper = new ObjectMapper(clazz);
+
          String table = ((Table) clazz.getConstructor().getAnnotation(Table.class)).value();
          String sql = "Select * FROM " + table;
 
